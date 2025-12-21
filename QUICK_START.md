@@ -29,7 +29,7 @@ docker compose -f src/test/resources/postgres/docker-compose.yml up -d
 export RDBMS_VENDOR=postgresql
 export RDBMS_HOSTNAME=localhost
 export RDBMS_PORT=5432
-export RDBMS_DATABASE_NAME=qqq_orders
+export RDBMS_DATABASE_NAME=makers4
 export RDBMS_USERNAME=devuser
 export RDBMS_PASSWORD=devpass
 ```
@@ -42,7 +42,7 @@ mvn liquibase:update
 ## 5) Build and run
 ```bash
 mvn clean package -DskipTests
-java -jar target/new-qqq-application-template.jar
+java -jar target/makers4.jar
 ```
 Open:  
 - Dashboard: http://localhost:8000/  

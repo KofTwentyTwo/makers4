@@ -1,19 +1,19 @@
-# new-qqq-application-template
+# Makers4
 
-Minimal QQQ starter project with a simple order-management domain (Customer, Product, Order, OrderLine), Liquibase migrations + seed data, mock auth, and the Material Dashboard served at `/`.
+The platform for woodworkers and cabinet makers. Built on the QQQ low-code framework.
 
 ## Run locally (Postgres)
 ```bash
 export RDBMS_VENDOR=postgresql
 export RDBMS_HOSTNAME=localhost
 export RDBMS_PORT=5432
-export RDBMS_DATABASE_NAME=qqq_orders
+export RDBMS_DATABASE_NAME=makers4
 export RDBMS_USERNAME=devuser
 export RDBMS_PASSWORD=devpass
 
 mvn liquibase:update
 mvn clean package -DskipTests
-java -jar target/new-qqq-application-template.jar
+java -jar target/makers4.jar
 ```
 Open `http://localhost:8000/` for the dashboard and `http://localhost:8000/qqq-api/` for APIs.
 
