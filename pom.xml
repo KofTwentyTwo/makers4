@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Rights Reserved
+  ~
+  ~ Copyright (c) 2025. Kof22
+  ~
+  ~ THE CONTENTS OF THIS PROJECT ARE PROPRIETARY AND CONFIDENTIAL.
+  ~ UNAUTHORIZED COPYING, TRANSFERRING, OR REPRODUCTION OF ANY PART OF THIS PROJECT, VIA ANY MEDIUM,
+IS STRICTLY PROHIBITED.
+  ~
+  ~ The receipt or possession of the source code and/or any parts thereof does not convey or imply
+any right to use them
+  ~ for any purpose other than the purpose for which they were provided to you.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+<modelVersion>4.0.0</modelVersion>
+<groupId>com.example</groupId>
+<artifactId>new-qqq-application-template</artifactId>
+<version>0.1.0-SNAPSHOT</version>
+
+  <properties>
+    <!-- props specifically to this module -->
+    <!-- none at this time -->
+
+    <!-- Common props for all qqq modules -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <qqq.version.bom>0.33.0-health-endpoints-bc5898783-SNAPSHOT</qqq.version.bom>
+    <qqq.version.frontendMaterialDashboard>0.28.0-SNAPSHOT</qqq.version.frontendMaterialDashboard>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.kingsrook.qqq</groupId>
+        <artifactId>qqq-bom-pom</artifactId>
+        <version>${qqq.version.bom}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <!-- JPA API -->
+    <!-- qqq modules -->
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-backend-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-backend-module-rdbms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-backend-module-postgres</artifactId>
+      <version>${qqq.version.bom}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-backend-module-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-backend-module-filesystem</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-middleware-javalin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-middleware-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-middleware-picocli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-language-support-javascript</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-frontend-material-dashboard</artifactId>
+      <version>${qqq.version.frontendMaterialDashboard}</version>
+    </dependency>
+
+    <!-- JPA annotations for entities -->
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- database & tooling -->
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+      <version>4.19.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.2</version>
+    </dependency>
+
+    <!-- Health Module -->
+    <dependency>
+      <groupId>com.kingsrook.qqq</groupId>
+      <artifactId>qqq-middleware-health</artifactId>
+      <version>${qqq.version.bom}</version>
+    </dependency>
+
+    <!-- Testing & utilities -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.23.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.2.224</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>new-qqq-application-template</finalName>
+    <plugins>
+      <!-- Fat jar for quickstart -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.example.orders.Server</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <compilerArgument>-Xlint:unchecked</compilerArgument>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <useModulePath>false</useModulePath>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>4.19.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.19.0</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+          <url>${env.RDBMS_URL}</url>
+          <username>${env.RDBMS_USERNAME}</username>
+          <password>${env.RDBMS_PASSWORD}</password>
+          <contexts>${env.LB_CONTEXTS}</contexts>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>central-portal-snapshots</id>
+      <name>Central Portal Snapshots</name>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>

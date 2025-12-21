@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  qqq-orders-db:
+    image: qqq-orders-db
+    container_name: qqq-orders-db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: qqq_orders
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+    ports:
+      - "5432:5432"
+

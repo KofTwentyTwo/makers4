@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - includeAll:
+      path: db/liquibase/changesets
+  - includeAll:
+      path: db/liquibase/datasets
+
