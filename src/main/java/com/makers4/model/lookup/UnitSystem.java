@@ -7,14 +7,20 @@ import com.kingsrook.qqq.backend.core.model.data.QRecordEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.QInstance;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.UniqueKey;
 import com.makers4.metadata.Makers4MetaDataProvider;
+import com.makers4.model.Project;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +33,19 @@ import java.util.List;
 
 @Entity
 @Table(name = UnitSystem.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = UnitSystem.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = UnitSystem.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "unitSystemId",
+         childTableEntityClass = Project.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Projects", maxRows = 50)
+      )
+   }
+)
 public class UnitSystem extends QRecordEntity
 {
    public static final String TABLE_NAME  = "unit_system";
@@ -261,6 +279,17 @@ public class UnitSystem extends QRecordEntity
 
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "code", "name", "description")));
          table.addSection(new QFieldSection("settings", "Settings", new QIcon("settings"), Tier.T2, List.of("sortOrder", "isActive")));
+
+         ////////////////////////////////
+         // Child Projects Section //
+         ////////////////////////////////
+         String projectsJoinName = QJoinMetaData.makeInferredJoinName(UnitSystem.TABLE_NAME, Project.TABLE_NAME);
+         table.addSection(new QFieldSection("projects", new QIcon().withName(Project.ICON_NAME), Tier.T2).withLabel("Projects").withWidgetName(projectsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Projects")
+            .withJoinPath(List.of(projectsJoinName))
+            .withJoinTable(Project.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;

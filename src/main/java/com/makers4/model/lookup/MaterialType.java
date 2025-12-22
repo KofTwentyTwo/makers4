@@ -7,9 +7,14 @@ import com.kingsrook.qqq.backend.core.model.data.QRecordEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.QInstance;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
@@ -27,7 +32,19 @@ import java.util.List;
 
 @Entity
 @Table(name = MaterialType.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = MaterialType.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = MaterialType.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "materialTypeId",
+         childTableEntityClass = Material.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Materials", maxRows = 50)
+      )
+   }
+)
 public class MaterialType extends QRecordEntity
 {
    public static final String TABLE_NAME  = "material_type";
@@ -261,6 +278,17 @@ public class MaterialType extends QRecordEntity
 
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "code", "name", "description")));
          table.addSection(new QFieldSection("settings", "Settings", new QIcon("settings"), Tier.T2, List.of("sortOrder", "isActive")));
+
+         ////////////////////////////////
+         // Child Materials Section //
+         ////////////////////////////////
+         String materialsJoinName = QJoinMetaData.makeInferredJoinName(MaterialType.TABLE_NAME, Material.TABLE_NAME);
+         table.addSection(new QFieldSection("materials", new QIcon().withName(Material.ICON_NAME), Tier.T2).withLabel("Materials").withWidgetName(materialsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Materials")
+            .withJoinPath(List.of(materialsJoinName))
+            .withJoinTable(Material.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;

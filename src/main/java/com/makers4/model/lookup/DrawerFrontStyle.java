@@ -7,13 +7,19 @@ import com.kingsrook.qqq.backend.core.model.data.QRecordEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.QInstance;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.UniqueKey;
+import com.makers4.model.Cabinet;
 import com.makers4.metadata.Makers4MetaDataProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +33,19 @@ import java.util.List;
 
 @Entity
 @Table(name = DrawerFrontStyle.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = DrawerFrontStyle.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = DrawerFrontStyle.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "drawerFrontStyleId",
+         childTableEntityClass = Cabinet.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Cabinets", maxRows = 50)
+      )
+   }
+)
 public class DrawerFrontStyle extends QRecordEntity
 {
    public static final String TABLE_NAME  = "drawer_front_style";
@@ -261,6 +279,17 @@ public class DrawerFrontStyle extends QRecordEntity
 
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "code", "name", "description")));
          table.addSection(new QFieldSection("settings", "Settings", new QIcon("settings"), Tier.T2, List.of("sortOrder", "isActive")));
+
+         ////////////////////////////////
+         // Child Cabinets Section //
+         ////////////////////////////////
+         String cabinetsJoinName = QJoinMetaData.makeInferredJoinName(DrawerFrontStyle.TABLE_NAME, Cabinet.TABLE_NAME);
+         table.addSection(new QFieldSection("cabinets", new QIcon().withName(Cabinet.ICON_NAME), Tier.T2).withLabel("Cabinets").withWidgetName(cabinetsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Cabinets")
+            .withJoinPath(List.of(cabinetsJoinName))
+            .withJoinTable(Cabinet.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;
