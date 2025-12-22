@@ -9,6 +9,9 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
@@ -39,7 +42,25 @@ import java.util.List;
 
 @Entity
 @Table(name = Cabinet.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = Cabinet.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = Cabinet.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "cabinetId",
+         childTableEntityClass = CabinetOpening.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Cabinet Openings", maxRows = 20)
+      ),
+      @ChildTable(
+         joinFieldName = "cabinetId",
+         childTableEntityClass = Part.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Parts", maxRows = 50)
+      )
+   }
+)
 public class Cabinet extends QRecordEntity
 {
    public static final String TABLE_NAME  = "cabinet";

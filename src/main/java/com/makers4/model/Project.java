@@ -9,6 +9,9 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
@@ -31,7 +34,31 @@ import java.util.List;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = Project.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = Project.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "projectId",
+         childTableEntityClass = Cabinet.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Cabinets", maxRows = 50)
+      ),
+      @ChildTable(
+         joinFieldName = "projectId",
+         childTableEntityClass = CutList.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Cut Lists", maxRows = 20)
+      ),
+      @ChildTable(
+         joinFieldName = "projectId",
+         childTableEntityClass = RenderJob.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Render Jobs", maxRows = 20)
+      )
+   }
+)
 public class Project extends QRecordEntity
 {
    public static final String TABLE_NAME  = "project";

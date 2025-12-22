@@ -9,6 +9,9 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
+import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
@@ -29,7 +32,19 @@ import java.util.List;
 
 @Entity
 @Table(name = CutList.TABLE_NAME)
-@QMetaDataProducingEntity(produceTableMetaData = true, tableMetaDataCustomizer = CutList.TableMetaDataCustomizer.class, producePossibleValueSource = true)
+@QMetaDataProducingEntity(
+   produceTableMetaData = true,
+   tableMetaDataCustomizer = CutList.TableMetaDataCustomizer.class,
+   producePossibleValueSource = true,
+   childTables = {
+      @ChildTable(
+         joinFieldName = "cutListId",
+         childTableEntityClass = CutListItem.class,
+         childJoin = @ChildJoin(enabled = true),
+         childRecordListWidget = @ChildRecordListWidget(enabled = true, label = "Cut List Items", maxRows = 100)
+      )
+   }
+)
 public class CutList extends QRecordEntity
 {
    public static final String TABLE_NAME  = "cut_list";
