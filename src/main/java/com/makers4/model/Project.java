@@ -9,10 +9,12 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
@@ -686,6 +688,37 @@ public class Project extends QRecordEntity
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "userId", "name", "description", "unitSystemId")));
          table.addSection(new QFieldSection("boxMaterials", "Box Material Defaults", new QIcon("inventory_2"), Tier.T2, List.of("defaultBoxMaterialId", "defaultBackMaterialId", "defaultDrawerBoxMaterialId")));
          table.addSection(new QFieldSection("faceMaterials", "Face/Door Material Defaults", new QIcon("door_front"), Tier.T2, List.of("defaultFaceFrameMaterialId", "defaultDoorFrameMaterialId", "defaultDoorPanelMaterialId", "defaultDrawerFrontMaterialId")));
+
+         /////////////////////////////
+         // Child Cabinets Section //
+         /////////////////////////////
+         String cabinetsJoinName = QJoinMetaData.makeInferredJoinName(Project.TABLE_NAME, Cabinet.TABLE_NAME);
+         table.addSection(new QFieldSection("cabinets", new QIcon().withName(Cabinet.ICON_NAME), Tier.T2).withLabel("Cabinets").withWidgetName(cabinetsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Cabinets")
+            .withJoinPath(List.of(cabinetsJoinName))
+            .withJoinTable(Cabinet.TABLE_NAME));
+
+         /////////////////////////////
+         // Child Cut Lists Section //
+         /////////////////////////////
+         String cutListsJoinName = QJoinMetaData.makeInferredJoinName(Project.TABLE_NAME, CutList.TABLE_NAME);
+         table.addSection(new QFieldSection("cutLists", new QIcon().withName(CutList.ICON_NAME), Tier.T2).withLabel("Cut Lists").withWidgetName(cutListsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Cut Lists")
+            .withJoinPath(List.of(cutListsJoinName))
+            .withJoinTable(CutList.TABLE_NAME));
+
+         //////////////////////////////
+         // Child Render Jobs Section //
+         //////////////////////////////
+         String renderJobsJoinName = QJoinMetaData.makeInferredJoinName(Project.TABLE_NAME, RenderJob.TABLE_NAME);
+         table.addSection(new QFieldSection("renderJobs", new QIcon().withName(RenderJob.ICON_NAME), Tier.T2).withLabel("Render Jobs").withWidgetName(renderJobsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Render Jobs")
+            .withJoinPath(List.of(renderJobsJoinName))
+            .withJoinTable(RenderJob.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;

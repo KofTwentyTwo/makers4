@@ -8,10 +8,12 @@ import com.kingsrook.qqq.backend.core.model.metadata.QInstance;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
@@ -681,6 +683,17 @@ public class CabinetOpening extends QRecordEntity
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "cabinetId", "openingTypeId", "sequenceNumber", "heightMm")));
          table.addSection(new QFieldSection("doorOverrides", "Door Overrides", new QIcon("door_sliding"), Tier.T2, List.of("doorStyleId", "doorFrameMaterialId", "doorPanelStyleId", "doorPanelMaterialId")));
          table.addSection(new QFieldSection("drawerOverrides", "Drawer Overrides", new QIcon("drag_indicator"), Tier.T2, List.of("drawerFrontStyleId", "drawerFrontMaterialId", "drawerFrontEdgeProfileId")));
+
+         /////////////////////////
+         // Child Parts Section //
+         /////////////////////////
+         String partsJoinName = QJoinMetaData.makeInferredJoinName(CabinetOpening.TABLE_NAME, Part.TABLE_NAME);
+         table.addSection(new QFieldSection("parts", new QIcon().withName(Part.ICON_NAME), Tier.T2).withLabel("Parts").withWidgetName(partsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Parts")
+            .withJoinPath(List.of(partsJoinName))
+            .withJoinTable(Part.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;

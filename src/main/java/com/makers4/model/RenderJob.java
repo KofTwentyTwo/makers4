@@ -9,10 +9,12 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
@@ -408,6 +410,17 @@ public class RenderJob extends QRecordEntity
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "projectId", "cabinetId", "renderType", "status")));
          table.addSection(new QFieldSection("timing", "Timing", new QIcon("schedule"), Tier.T2, List.of("requestedAt", "startedAt", "completedAt")));
          table.addSection(new QFieldSection("error", "Error", new QIcon("error"), Tier.T2, List.of("errorMessage")));
+
+         ////////////////////////////////
+         // Child Render Artifacts Section //
+         ////////////////////////////////
+         String artifactsJoinName = QJoinMetaData.makeInferredJoinName(RenderJob.TABLE_NAME, RenderArtifact.TABLE_NAME);
+         table.addSection(new QFieldSection("artifacts", new QIcon().withName(RenderArtifact.ICON_NAME), Tier.T2).withLabel("Render Artifacts").withWidgetName(artifactsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Render Artifacts")
+            .withJoinPath(List.of(artifactsJoinName))
+            .withJoinTable(RenderArtifact.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;

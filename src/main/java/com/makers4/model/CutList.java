@@ -9,10 +9,12 @@ import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueB
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
+import com.kingsrook.qqq.backend.core.model.metadata.joins.QJoinMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildRecordListWidget;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.ChildTable;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.annotations.QMetaDataProducingEntity;
+import com.kingsrook.qqq.backend.core.model.metadata.tables.ExposedJoin;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QFieldSection;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.QTableMetaData;
 import com.kingsrook.qqq.backend.core.model.metadata.tables.Tier;
@@ -302,6 +304,17 @@ public class CutList extends QRecordEntity
             .withBackendName(Makers4MetaDataProvider.RDBMS_BACKEND_NAME);
 
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "projectId", "cabinetId", "name", "generatedAt")));
+
+         ////////////////////////////////
+         // Child Cut List Items Section //
+         ////////////////////////////////
+         String itemsJoinName = QJoinMetaData.makeInferredJoinName(CutList.TABLE_NAME, CutListItem.TABLE_NAME);
+         table.addSection(new QFieldSection("items", new QIcon().withName(CutListItem.ICON_NAME), Tier.T2).withLabel("Cut List Items").withWidgetName(itemsJoinName));
+         table.withExposedJoin(new ExposedJoin()
+            .withLabel("Cut List Items")
+            .withJoinPath(List.of(itemsJoinName))
+            .withJoinTable(CutListItem.TABLE_NAME));
+
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;
