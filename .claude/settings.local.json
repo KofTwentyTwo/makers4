@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile:*)",
+      "Bash(mvn dependency:resolve:*)",
+      "Bash(mvn dependency:tree:*)",
+      "Bash(mvn dependency:build-classpath:*)",
+      "Bash(xargs:*)",
+      "Bash(mvn exec:java:*)",
+      "Bash(wc:*)",
+      "Bash(timeout 30 mvn exec:java:*)",
+      "Bash(ls:*)",
+      "Bash(timeout 60 mvn:*)",
+      "Bash(timeout 90 mvn:*)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git push)",
+      "Bash(mvn test:*)",
+      "Bash(jar -tf:*)",
+      "Bash(mvn verify:*)",
+      "Bash(mvn clean test:*)",
+      "Bash(docker compose:*)",
+      "Bash(cat:*)",
+      "Bash(pdfinfo:*)",
+      "Bash(open:*)",
+      "Bash(java -jar:*)",
+      "Bash(mvn package:*)",
+      "Bash(echo:*)",
+      "Bash(lsof:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker inspect:*)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "Bash(PGPASSWORD=devpass psql:*)"
+    ]
+  }
+}
