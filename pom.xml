@@ -33,7 +33,7 @@ any right to use them
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-    <qqq.version.bom>0.33.0-SNAPSHOT</qqq.version.bom>
+    <qqq.version.bom>0.34.0-SNAPSHOT</qqq.version.bom>
     <qqq.version.frontendMaterialDashboard>0.28.0-SNAPSHOT</qqq.version.frontendMaterialDashboard>
   </properties>
 
@@ -115,12 +115,13 @@ any right to use them
       <version>42.7.2</version>
     </dependency>
 
-    <!-- Health Module -->
+    <!-- Health Module (commented out - not yet published)
     <dependency>
       <groupId>com.kingsrook.qqq</groupId>
       <artifactId>qqq-middleware-health</artifactId>
       <version>${qqq.version.bom}</version>
     </dependency>
+    -->
 
     <!-- Testing & utilities -->
     <dependency>
@@ -227,6 +228,69 @@ any right to use them
           <password>${env.RDBMS_PASSWORD}</password>
           <contexts>${env.LB_CONTEXTS}</contexts>
         </configuration>
+      </plugin>
+
+      <!-- JaCoCo for test coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.11</version>
+        <configuration>
+          <!-- Exclude QQQ boilerplate packages from coverage -->
+          <excludes>
+            <exclude>com/makers4/model/**</exclude>
+            <exclude>com/makers4/metadata/**</exclude>
+            <exclude>com/makers4/startup/**</exclude>
+            <exclude>com/makers4/Server*</exclude>
+            <exclude>com/kof22/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <!-- Prepare agent for test coverage collection -->
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <!-- Generate coverage report after tests -->
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <!-- Enforce coverage thresholds -->
+          <execution>
+            <id>check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <!-- 70% line coverage -->
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.70</minimum>
+                    </limit>
+                    <!-- 50% branch coverage -->
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.50</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

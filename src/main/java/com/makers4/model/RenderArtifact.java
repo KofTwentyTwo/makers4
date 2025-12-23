@@ -5,7 +5,9 @@ import com.kingsrook.qqq.backend.core.exceptions.QException;
 import com.kingsrook.qqq.backend.core.model.data.QField;
 import com.kingsrook.qqq.backend.core.model.data.QRecordEntity;
 import com.kingsrook.qqq.backend.core.model.metadata.QInstance;
+import com.kingsrook.qqq.backend.core.model.metadata.fields.AdornmentType;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.DynamicDefaultValueBehavior;
+import com.kingsrook.qqq.backend.core.model.metadata.fields.FieldAdornment;
 import com.kingsrook.qqq.backend.core.model.metadata.fields.ValueTooLongBehavior;
 import com.kingsrook.qqq.backend.core.model.metadata.layout.QIcon;
 import com.kingsrook.qqq.backend.core.model.metadata.producers.MetaDataCustomizerInterface;
@@ -69,7 +71,7 @@ public class RenderArtifact extends QRecordEntity
 
    @Lob
    @Column(name = "file_data", nullable = false)
-   @QField(isRequired = true, backendName = "file_data", label = "File Data", isHidden = true)
+   @QField(isRequired = true, backendName = "file_data", label = "File Data")
    private byte[] fileData;
 
    @Column(name = "createdate", nullable = false, updatable = false)
@@ -314,8 +316,15 @@ public class RenderArtifact extends QRecordEntity
             .withRecordLabelFields(List.of("name"))
             .withBackendName(Makers4MetaDataProvider.RDBMS_BACKEND_NAME);
 
+         // Mark fileData as heavy field with download adornment
+         table.getField("fileData")
+            .withIsHeavy(true)
+            .withFieldAdornment(new FieldAdornment(AdornmentType.FILE_DOWNLOAD)
+               .withValue(AdornmentType.FileDownloadValues.FILE_NAME_FIELD, "name"));
+
          table.addSection(new QFieldSection("identity", "Identity", new QIcon(ICON_NAME), Tier.T1, List.of("id", "renderJobId", "name", "artifactType")));
          table.addSection(new QFieldSection("file", "File", new QIcon("attachment"), Tier.T2, List.of("mimeType", "fileSizeBytes")));
+         table.addSection(new QFieldSection("download", "Download", new QIcon("download"), Tier.T2, List.of("fileData")));
          table.addSection(new QFieldSection("dates", "Dates", new QIcon("event"), Tier.T3, List.of("createDate", "modifyDate")));
 
          return table;
