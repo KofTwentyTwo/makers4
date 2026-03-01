@@ -1,0 +1,26 @@
+pipeline: java-webapp
+orb_version: "0.1"
+
+image_name: makers4
+java_version: "17"
+
+docker:
+  registry: ghcr.io/koftwentytwo
+
+coverage:
+  min_instruction: "0"
+
+sast:
+  fail_on_findings: false
+
+e2e: false
+sbom: false
+owasp: false
+
+health:
+  path: /api/health
+  port: "8000"
+
+contexts:
+  registry: ghcr
+  github: github
