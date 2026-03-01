@@ -1,0 +1,6 @@
+# Gitleaks allowlist -- local development credentials only.
+# These paths contain intentional dev/test secrets that are not used in production.
+[allowlist]
+paths = [
+  '''scripts/''',
+]
