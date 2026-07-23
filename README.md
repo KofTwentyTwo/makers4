@@ -8,27 +8,7 @@ Makers4 is an application platform engineered specifically for custom woodworkin
 
 ## Technical Stack & Architecture
 
-```mermaid
-graph TD
-    subgraph Frontend Layer
-        UI["Material Dashboard UI (React 18 / Material-UI)"]
-    end
-
-    subgraph Middleware & API Layer
-        Javalin["Javalin Web Server & REST Middleware"]
-        QQQ["QQQ Low-Code Framework Core Engine"]
-    end
-
-    subgraph Persistence Layer
-        Liquibase["Liquibase Schema Migration"]
-        DB["PostgreSQL 17 / H2 (Test Runtime)"]
-    end
-
-    UI --> Javalin
-    Javalin --> QQQ
-    QQQ --> Liquibase
-    Liquibase --> DB
-```
+![Makers4 Technical Stack & Architecture](docs/architecture.png)
 
 - **Core Framework**: QQQ Metadata Framework (Java 17+)
 - **HTTP Server**: Javalin Web Framework & QQQ REST API Endpoint Router
